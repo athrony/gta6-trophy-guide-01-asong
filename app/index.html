@@ -1,25 +1,33 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>GTA VI trophy checklist</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#17261f">
+  <title>Leonida Field Guide — Trophy Tracker</title>
+  <link rel="stylesheet" href="style.css">
+  <script defer src="app.js"></script>
 </head>
 <body>
-<header>
-  <h1>GTA VI trophy checklist</h1>
-  <p id="progress">0 of 55 earned</p>
-</header>
-<div class="controls">
-  <label>Grade <select id="grade"><option value="all">All</option><option value="platinum">Platinum</option><option value="gold">Gold</option><option value="silver">Silver</option><option value="bronze">Bronze</option></select></label>
-  <button id="export" type="button">Export progress</button>
-  <label class="import">Import progress <input id="import" type="file" accept="application/json"></label>
-</div>
-<table>
-  <thead><tr><th>Earned</th><th>Trophy</th><th>Grade</th><th>How to get it</th></tr></thead>
-  <tbody id="rows"></tbody>
-</table>
-<script type="module" src="app.js"></script>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="#top"><span class="brand-mark">L<span>✳</span></span><span>LEONIDA<br><small>FIELD GUIDE</small></span></a>
+      <nav aria-label="Main navigation"><a class="active" href="#tracker">Trophy tracker</a><a href="#roadmap">Roadmap</a></nav>
+      <span class="platform">PS5 EDITION <span>●</span> OFFLINE</span>
+    </header>
+    <main id="top">
+      <section class="hero">
+        <div class="hero-copy"><div class="eyebrow"><span></span> YOUR COMPANION TO 100%</div><h1>Chasing the<br><em>Leonida legend.</em></h1><p>Every trophy. One place to track them all. Make your way through the sunshine state, one achievement at a time.</p><a class="hero-link" href="#tracker">Explore the trophies <span>↘</span></a></div>
+        <div class="hero-art" aria-hidden="true"><div class="sun"></div><div class="horizon"></div><div class="palm palm-one">✳</div><div class="palm palm-two">✳</div><div class="art-label">THE ROAD TO<br><strong>PLATINUM</strong><br><span>VICE CITY & BEYOND</span></div><div class="art-stamp">L<br>01</div></div>
+      </section>
+      <section class="progress-panel" aria-label="Trophy progress"><div><span class="section-kicker">YOUR JOURNEY</span><h2>Making progress.</h2><p>Saved on this device, ready when you are.</p></div><div class="progress-main"><div class="progress-number"><strong id="earned">0</strong><span> / 55<br><small>TROPHIES EARNED</small></span></div><div class="progress-track"><div id="progress-bar"></div></div></div><div class="grade-counts" id="grade-counts"></div></section>
+      <section class="roadmap" id="roadmap"><div class="section-heading"><div><span class="section-kicker">THE BIG PICTURE</span><h2>Your road to platinum.</h2></div><p>A flexible route through the list, from the first mission to the final cleanup.</p></div><div class="stages"><article><span>01 / STORY</span><h3>Start the journey</h3><p>Complete Gone Fishing, chapters 1–4 and the final mission. Look out for the six named mission milestones along the way.</p></article><article><span>02 / EXPLORE</span><h3>See the state</h3><p>Try activities, win 20 different races, finish 250 stunts and use WAiNK It at 100 locations. Build three card sets.</p></article><article><span>03 / CLEAN UP</span><h3>Finish the threads</h3><p>Complete eight stranger strands and the named final missions. Work toward 100% completion and clear remaining trophies.</p></article><article><span>04 / PLATINUM</span><h3>Become a legend</h3><p>Earn the other 54 trophies to complete the collection and claim Vice Got a Price!</p></article></div><p class="notice"><strong>Missability is unconfirmed.</strong> The supplied official descriptions do not establish which trophies can be missed or whether missions can be replayed. Save regularly and check back before passing story milestones.</p></section>
+      <section class="tracker" id="tracker"><div class="section-heading tracker-heading"><div><span class="section-kicker">THE CHECKLIST</span><h2>Make it count<span class="period">.</span></h2><p>Keep track of every last trophy.</p></div><div class="file-actions"><button id="export" class="outline-button">↗ &nbsp; Export save</button><button id="import-button" class="outline-button">↙ &nbsp; Import save</button><input id="import-file" type="file" accept="application/json,.json" hidden></div></div>
+        <div class="toolbar"><div class="filters" aria-label="Filter trophies"><button class="selected" data-filter="all">All <span>55</span></button><button data-filter="story">Story</button><button data-filter="missable">Missable</button><button data-filter="collectibles">Collectibles</button><button data-filter="activities">Activities</button></div><label class="spoiler"><input type="checkbox" id="spoilers" checked><span class="toggle"></span> Hide story spoilers</label></div>
+        <div class="list-meta"><span id="result-count">ALL TROPHIES</span><label class="search"><span>⌕</span><input id="search" type="search" placeholder="Search trophies" aria-label="Search trophies"></label></div>
+        <div id="trophy-list" class="trophy-list" aria-live="polite"></div><p id="message" class="message" role="status"></p>
+      </section>
+    </main><footer><span class="brand-footer">LEONIDA <b>✳</b> FIELD GUIDE</span><span>MADE FOR THE JOURNEY. SAVED ON YOUR DEVICE.</span><a href="#top">BACK TO TOP ↑</a></footer>
+  </div>
 </body>
 </html>
