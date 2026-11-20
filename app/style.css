@@ -153,3 +153,30 @@ footer{gap:20px;flex-wrap:wrap}
 .stages article:nth-child(3){background-image:linear-gradient(0deg,#101a30 0%,#101a30 34%,transparent 100%),url('assets/jason.jpg');background-position:center 30%}
 .kind-story .trophy-icon{background-image:linear-gradient(135deg,#16243e35,#0c132aba),url('assets/lucia.jpg');background-position:center 28%}
 .kind-activities .trophy-icon{background-image:linear-gradient(135deg,#16243e35,#0c132aba),url('assets/jason.jpg');background-position:center 28%}
+
+/* Console-inspired collection layout */
+main{display:flex;flex-direction:column}
+.hero{order:0;min-height:165px;margin:16px 0 10px}
+.hero-copy{padding:20px 30px;max-width:560px}
+.hero h1{font-size:32px;line-height:1.05;margin:8px 0}
+.hero-copy p{font-size:12px;margin:0;line-height:1.4}
+.hero-link{display:none}
+.guide-facts{order:1;margin:0 0 10px;padding:12px 18px}
+.progress-panel{order:2;margin:0;padding:14px 20px;min-height:0}
+.progress-panel h2{font-size:16px;margin:4px 0}.progress-panel p{display:none}
+.tracker{order:3;padding:20px 0 30px}.roadmap{order:4;padding:35px 0 55px}
+.tracker-heading h2{font-size:22px}.tracker-heading p{display:none}.toolbar{margin-top:12px}
+.collection-layout{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(320px,.75fr);gap:14px;align-items:start}
+.trophy-list{max-height:620px;overflow:auto;padding:3px 5px 3px 3px}
+.trophy{grid-template-columns:20px 68px minmax(0,1fr) 60px;gap:12px;padding:9px 12px;min-height:80px}
+.trophy.is-selected{background:#263b5e;border-color:#9ccaff;box-shadow:0 0 0 1px #9ccaff,0 0 18px #538ae02b}
+.trophy-icon{width:68px;height:58px;background-image:linear-gradient(135deg,#16243e40,#0c132a80),url('assets/mission-thumb.jpg')}
+.kind-collectibles .trophy-icon,.kind-activities .trophy-icon{background-image:linear-gradient(135deg,#16243e40,#0c132a80),url('assets/mission-thumb.jpg')}
+.row-select{border:0;background:transparent;text-align:left;color:inherit;cursor:pointer;min-width:0;padding:5px}
+.row-select h3{font-size:14px}.row-select:focus-visible{outline:2px solid #b9d8ff;outline-offset:3px;border-radius:3px}
+.detail-panel{position:sticky;top:16px;min-height:480px;border:1px solid #a2bfe33d;border-radius:8px;background:rgba(20,33,58,.95);padding:20px;box-shadow:0 16px 50px #0003}
+.detail-art{height:145px;border-radius:5px;background:linear-gradient(90deg,#111e35a8,#111e3522),url('assets/mission-thumb.jpg') center 40%/cover;display:flex;align-items:flex-end;padding:14px}
+.detail-art.kind-story{background-image:linear-gradient(90deg,#111e35a8,#111e3522),url('assets/lucia.jpg')}
+.detail-cup .cup{width:46px;height:46px}.detail-grade{text-transform:uppercase;letter-spacing:1.4px;font-size:10px;color:#a8bedc;margin:20px 0 8px}.detail-panel h2{font-size:25px;line-height:1.2}.detail-description{color:#c5d1e3;font-size:13px;line-height:1.55;margin:10px 0}.detail-status{font-size:10px;letter-spacing:1px;color:#97acd0;padding:10px 0;border-bottom:1px solid #ffffff20}.detail-panel details{margin-top:16px}.detail-panel summary{cursor:pointer;color:#b6d5ff;font-size:11px;font-weight:bold;letter-spacing:1px}.detail-panel .guide{font-size:12px}
+@media(max-width:800px){.collection-layout{grid-template-columns:1fr}.detail-panel{position:static;min-height:0;grid-row:1}.trophy-list{max-height:none}.hero{min-height:155px}.hero h1{font-size:27px}}
+.hero-art{background-position:center 25%}

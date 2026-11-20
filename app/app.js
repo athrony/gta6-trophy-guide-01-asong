@@ -7,6 +7,7 @@ const message = document.querySelector('#message');
 let trophies = [];
 let earned = new Set();
 let filter = 'all';
+let selectedId = 1;
 
 try {
   const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
@@ -47,14 +48,14 @@ function render() {
   }
   const query = search.value.trim().toLowerCase();
   const visible = trophies.filter(trophy => {
-    const hidden = spoilerToggle.checked && trophy.kind === 'story' && !earned.has(trophy.id);
+    const hidden = spoilerToggle.checked && trophy.hidden && !earned.has(trophy.id);
     const matchesFilter = filter === 'all' || (filter === 'missable' ? trophy.missable : trophy.kind === filter);
-    const searchable = hidden ? 'hidden story trophy' : `${trophy.name} ${trophy.description} ${trophy.guide}`.toLowerCase();
+    const searchable = hidden ? 'hidden trophy' : `${trophy.name} ${trophy.description} ${trophy.guide}`.toLowerCase();
     return matchesFilter && searchable.includes(query);
   });
   if (sort.value === 'name') visible.sort((first, second) => {
-    const firstHidden = spoilerToggle.checked && first.kind === 'story' && !earned.has(first.id);
-    const secondHidden = spoilerToggle.checked && second.kind === 'story' && !earned.has(second.id);
+    const firstHidden = spoilerToggle.checked && first.hidden && !earned.has(first.id);
+    const secondHidden = spoilerToggle.checked && second.hidden && !earned.has(second.id);
     return (firstHidden ? '' : first.name).localeCompare(secondHidden ? '' : second.name);
   });
   if (sort.value === 'grade') {
@@ -66,48 +67,60 @@ function render() {
   list.replaceChildren();
   if (!visible.length) {
     list.append(element('div', 'empty', filter === 'missable' ? 'No potentially missable trophies match your search.' : 'No trophies match your search.'));
+    document.querySelector('#trophy-detail').replaceChildren();
     return;
   }
+  if (!visible.some(trophy => trophy.id === selectedId)) selectedId = visible[0].id;
   for (const trophy of visible) {
     const isEarned = earned.has(trophy.id);
-    const hidden = spoilerToggle.checked && trophy.kind === 'story' && !isEarned;
-    const row = element('article', `trophy ${isEarned ? 'is-earned' : ''}`);
+    const hidden = spoilerToggle.checked && trophy.hidden && !isEarned;
+    const row = element('article', `trophy kind-${trophy.kind} ${isEarned ? 'is-earned' : ''} ${selectedId === trophy.id ? 'is-selected' : ''}`);
     const check = element('label', 'check');
     const input = document.createElement('input');
     input.type = 'checkbox';
     input.checked = isEarned;
-    input.setAttribute('aria-label', hidden ? 'Mark hidden story trophy earned' : `Mark ${trophy.name} earned`);
+    input.setAttribute('aria-label', hidden ? 'Mark hidden trophy earned' : `Mark ${trophy.name} earned`);
     input.addEventListener('change', () => { input.checked ? earned.add(trophy.id) : earned.delete(trophy.id); save(); render(); });
     check.append(input, element('span', 'checkmark', '✓'));
     const icon = element('div', `trophy-icon ${trophy.grade}`);
     icon.append(element('span', 'cup'));
-    row.classList.add(`kind-${trophy.kind}`);
-    const content = element('div', 'trophy-content');
-    const title = element('div', 'trophy-title');
-    title.append(element('h3', '', hidden ? 'Hidden story trophy' : trophy.name), element('span', 'category', trophy.kind));
-    content.append(title, element('p', 'description', hidden ? 'Earn this trophy to reveal its details.' : trophy.description));
-    if (!hidden) {
-      const details = document.createElement('details');
-      const summary = element('summary', '', 'VIEW GUIDE');
-      const guide = element('div', 'guide');
-      guide.append(element('p', '', trophy.guide));
-      const sources = element('p', 'source', 'SOURCES  ·  ');
-      trophy.sources.forEach((source, index) => {
-        if (index) sources.append(document.createTextNode('  ·  '));
-        const link = element('a', '', source.name);
-        link.href = source.url;
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
-        sources.append(link);
-      });
-      guide.append(sources, element('p', 'source', `MISSABILITY  ·  ${trophy.missableStatus}`));
-      details.append(summary, guide);
-      content.append(details);
-    }
-    const grade = element('div', 'grade-label', trophy.grade);
-    row.append(check, icon, content, grade);
+    const content = element('button', 'row-select');
+    content.type = 'button';
+    content.setAttribute('aria-pressed', String(selectedId === trophy.id));
+    content.append(element('h3', '', hidden ? 'Hidden trophy' : trophy.name), element('p', 'description', hidden ? 'Earn this trophy to reveal its details.' : trophy.description));
+    content.addEventListener('click', () => { selectedId = trophy.id; render(); document.querySelector('.is-selected .row-select')?.focus(); });
+    row.append(check, icon, content, element('div', 'grade-label', trophy.grade));
     list.append(row);
   }
+  const selected = visible.find(trophy => trophy.id === selectedId);
+  const hidden = spoilerToggle.checked && selected.hidden && !earned.has(selected.id);
+  const detail = document.querySelector('#trophy-detail');
+  detail.replaceChildren();
+  const detailArt = element('div', `detail-art kind-${selected.kind}`);
+  const detailCup = element('div', `detail-cup ${selected.grade}`);
+  detailCup.append(element('span', 'cup'));
+  detailArt.append(detailCup);
+  detail.append(detailArt, element('div', 'detail-grade', `${selected.grade} trophy`), element('h2', '', hidden ? 'Hidden trophy' : selected.name), element('p', 'detail-description', hidden ? 'Earn this trophy to reveal its details.' : selected.description), element('p', 'detail-status', earned.has(selected.id) ? 'EARNED' : 'NOT YET EARNED'));
+  if (!hidden) {
+    const details = document.createElement('details');
+    details.open = true;
+    const summary = element('summary', '', 'GUIDE & SOURCES');
+    const guide = element('div', 'guide');
+    guide.append(element('p', '', selected.guide));
+    const sources = element('p', 'source', 'SOURCES  ·  ');
+    selected.sources.forEach((source, index) => {
+      if (index) sources.append(document.createTextNode('  ·  '));
+      const link = element('a', '', source.name);
+      link.href = source.url;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      sources.append(link);
+    });
+    guide.append(sources, element('p', 'source', `MISSABILITY  ·  ${selected.missableStatus}`));
+    details.append(summary, guide);
+    detail.append(details);
+  }
+
 }
 
 document.querySelectorAll('[data-filter]').forEach(button => button.addEventListener('click', () => {
