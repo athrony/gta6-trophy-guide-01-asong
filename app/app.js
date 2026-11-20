@@ -5,6 +5,7 @@ const sort = document.querySelector('#sort');
 const spoilerToggle = document.querySelector('#spoilers');
 const message = document.querySelector('#message');
 let trophies = [];
+let guides = {};
 let earned = new Set();
 let filter = 'all';
 let selectedId = 1;
@@ -48,6 +49,89 @@ function trophyImage(trophy, className) {
   return img;
 }
 
+function sourceLink(source, text, className) {
+  const link = element('a', className, text);
+  link.href = source.url;
+  link.target = '_blank';
+  link.rel = 'noopener noreferrer';
+  return link;
+}
+
+function renderGuide(trophy) {
+  const guide = element('div', 'guide');
+  const data = guides[trophy.id];
+  if (data) {
+    guide.append(element('p', 'guide-summary', data.summary));
+    guide.append(element('h3', '', 'When'), element('p', '', data.when));
+    if (data.prerequisites?.length) {
+      guide.append(element('h3', '', 'Prerequisites'));
+      const prerequisites = element('ul', 'guide-prerequisites');
+      data.prerequisites.forEach(text => prerequisites.append(element('li', '', text)));
+      guide.append(prerequisites);
+    }
+    guide.append(element('h3', '', 'Steps'));
+    const steps = element('ol', 'guide-steps');
+    data.steps.forEach(step => {
+      const item = element('li', '', step.text);
+      const source = data.sources[step.source];
+      const citation = sourceLink(source, `[${step.source + 1}]`, 'guide-citation');
+      citation.setAttribute('aria-label', `Source ${step.source + 1}, ${source.name}`);
+      citation.title = source.name;
+      item.append(document.createTextNode(' '), citation);
+      steps.append(item);
+    });
+    guide.append(steps, element('h3', '', 'Missability'));
+    const missability = element('p', 'guide-missability');
+    missability.append(element('strong', '', data.missable.status), document.createTextNode(` — ${data.missable.note}`));
+    guide.append(missability);
+    if (data.effort) guide.append(element('h3', '', 'Effort'), element('p', '', data.effort));
+  } else {
+    guide.append(element('p', '', trophy.guide), element('p', 'source', `MISSABILITY · ${trophy.missableStatus}`));
+  }
+  guide.append(element('h3', '', 'Sources'));
+  const sources = element('ol', 'guide-sources');
+  (data?.sources || trophy.sources).forEach(source => {
+    const item = element('li');
+    item.append(sourceLink(source, source.name));
+    sources.append(item);
+  });
+  guide.append(sources);
+  return guide;
+}
+
+function renderRoadmap() {
+  document.querySelectorAll('.stages article').forEach((stage, index) => {
+    const stageTrophies = trophies.filter(trophy => trophy.roadmapStage === index + 1 && !(spoilerToggle.checked && trophy.hidden && !earned.has(trophy.id)));
+    let details = stage.querySelector('details');
+    if (!details) {
+      details = element('details', 'stage-trophies');
+      stage.append(details);
+    }
+    const wasOpen = details.open;
+    details.replaceChildren(element('summary', '', `${stageTrophies.length} trophies`));
+    const links = element('ul');
+    stageTrophies.forEach(trophy => {
+      const item = element('li');
+      const button = element('button', '', `${earned.has(trophy.id) ? '✓ ' : ''}${trophy.name}`);
+      button.type = 'button';
+      button.addEventListener('click', () => {
+        selectedId = trophy.id;
+        search.value = '';
+        filter = 'all';
+        document.querySelectorAll('[data-filter]').forEach(button => button.classList.toggle('selected', button.dataset.filter === 'all'));
+        render();
+        const selectedRow = document.querySelector('.is-selected .row-select');
+        selectedRow?.focus({ preventScroll: true });
+        selectedRow?.scrollIntoView({ block: 'nearest' });
+      });
+      item.append(button);
+      links.append(item);
+    });
+    details.append(links);
+    details.open = wasOpen;
+  });
+}
+
 function render() {
   const validIds = new Set(trophies.map(trophy => trophy.id));
   const earnedCount = [...earned].filter(id => validIds.has(id)).length;
@@ -62,11 +146,13 @@ function render() {
     item.append(element('span', `medal ${grade}`), element('strong', '', `${count}/${matching.length}`), element('small', '', grade));
     counts.append(item);
   }
+  renderRoadmap();
   const query = search.value.trim().toLowerCase();
   const visible = trophies.filter(trophy => {
     if (spoilerToggle.checked && trophy.hidden && !earned.has(trophy.id)) return false;
     const matchesFilter = filter === 'all' || (filter === 'missable' ? trophy.missable : trophy.kind === filter);
-    const searchable = `${trophy.name} ${trophy.description} ${trophy.guide}`.toLowerCase();
+    const guide = guides[trophy.id];
+    const searchable = `${trophy.name} ${trophy.description} ${trophy.guide} ${guide?.summary || ''} ${guide?.when || ''} ${(guide?.prerequisites || []).join(' ')} ${(guide?.steps || []).map(step => step.text).join(' ')}`.toLowerCase();
     return matchesFilter && searchable.includes(query);
   });
   if (sort.value === 'name') visible.sort((first, second) => first.name.localeCompare(second.name));
@@ -126,19 +212,7 @@ function render() {
   const details = document.createElement('details');
   details.open = true;
   const summary = element('summary', '', 'GUIDE & SOURCES');
-  const guide = element('div', 'guide');
-  guide.append(element('p', '', selected.guide));
-  const sources = element('p', 'source', 'SOURCES  ·  ');
-  selected.sources.forEach((source, index) => {
-    if (index) sources.append(document.createTextNode('  ·  '));
-    const link = element('a', '', source.name);
-    link.href = source.url;
-    link.target = '_blank';
-    link.rel = 'noopener noreferrer';
-    sources.append(link);
-  });
-  guide.append(sources, element('p', 'source', `MISSABILITY  ·  ${selected.missableStatus}`));
-  details.append(summary, guide);
+  details.append(summary, renderGuide(selected));
   detail.append(details);
 
 }
@@ -179,9 +253,19 @@ document.querySelector('#import-file').addEventListener('change', async event =>
   }
   event.target.value = '';
 });
-fetch('data/trophies.json').then(response => {
-  if (!response.ok) throw new Error('Trophy data unavailable');
-  return response.json();
-}).then(data => { trophies = data.trophies || data; render(); }).catch(() => {
+Promise.all([
+  fetch('data/trophies.json').then(response => {
+    if (!response.ok) throw new Error('Trophy data unavailable');
+    return response.json();
+  }),
+  fetch('data/guides.json').then(response => {
+    if (!response.ok) throw new Error('Guide data unavailable');
+    return response.json();
+  }).catch(() => ({})),
+]).then(([data, guideData]) => {
+  trophies = data.trophies || data;
+  guides = guideData;
+  render();
+}).catch(() => {
   list.append(element('div', 'empty', 'Trophy data could not be loaded. Open this guide using the local preview server.'));
 });

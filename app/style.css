@@ -204,3 +204,21 @@ main{display:flex;flex-direction:column}
 
 .trophy-icon{position:relative}.trophy-icon .cup{position:absolute;right:2px;bottom:2px;width:22px;height:22px;filter:drop-shadow(0 1px 3px #000)}
 .detail-cup{align-self:flex-end}
+
+.guide h3{margin:18px 0 6px;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#b6d5ff}
+.guide-summary{color:#e0e9f7}
+.guide-prerequisites,.guide-steps,.guide-sources{margin:6px 0;padding-left:22px}
+.guide-prerequisites li,.guide-sources li{margin:6px 0}
+.guide-steps li{margin:0 0 14px;padding-left:3px}
+.guide-steps li::marker,.guide-sources li::marker{color:#a9c9f4;font-weight:bold}
+.guide a{color:#aed4ff;text-underline-offset:3px}
+.guide-citation{display:inline-block;font-size:10px;font-weight:bold;white-space:nowrap;padding:0 3px;border:1px solid #a2bfe33d;border-radius:3px;text-decoration:none}
+.guide-citation:hover{background:#253f65}
+.guide-missability strong{text-transform:capitalize;color:#f5bcda}
+.guide-sources{font-size:11px;overflow-wrap:anywhere}
+.stage-trophies{margin-top:16px;border-top:1px solid var(--border);padding-top:10px}
+.stage-trophies summary{cursor:pointer;color:#b6d5ff;font-size:12px}
+.stage-trophies ul{list-style:none;padding:0;margin:10px 0 0;max-height:260px;overflow:auto}
+.stage-trophies button{border:0;background:transparent;color:#d4e2f7;font:inherit;font-size:12px;text-align:left;padding:6px 3px;cursor:pointer;width:100%}
+.stage-trophies button:hover{color:#fff;background:#253f65;border-radius:3px}
+@media(min-width:801px){.detail-panel{max-height:calc(100vh - 32px);overflow:auto;scrollbar-color:#526b94 #14213a}}
