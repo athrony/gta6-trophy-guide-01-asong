@@ -54,7 +54,7 @@ function render() {
   document.querySelector('#result-count').textContent = `${visible.length} ${visible.length === 1 ? 'TROPHY' : 'TROPHIES'} SHOWN`;
   list.replaceChildren();
   if (!visible.length) {
-    list.append(element('div', 'empty', filter === 'missable' ? 'No confirmed missable trophies in the supplied descriptions. Missability remains unconfirmed for the list.' : 'No trophies match your search.'));
+    list.append(element('div', 'empty', filter === 'missable' ? 'No potentially missable trophies match your search.' : 'No trophies match your search.'));
     return;
   }
   for (const trophy of visible) {
@@ -79,7 +79,17 @@ function render() {
       const details = document.createElement('details');
       const summary = element('summary', '', 'VIEW GUIDE');
       const guide = element('div', 'guide');
-      guide.append(element('p', '', trophy.guide), element('p', 'source', `SOURCE  ·  ${trophy.sources.join('; ')}`), element('p', 'source', 'MISSABILITY  ·  Unconfirmed from the official description'));
+      guide.append(element('p', '', trophy.guide));
+      const sources = element('p', 'source', 'SOURCES  ·  ');
+      trophy.sources.forEach((source, index) => {
+        if (index) sources.append(document.createTextNode('  ·  '));
+        const link = element('a', '', source.name);
+        link.href = source.url;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        sources.append(link);
+      });
+      guide.append(sources, element('p', 'source', `MISSABILITY  ·  ${trophy.missableStatus}`));
       details.append(summary, guide);
       content.append(details);
     }
