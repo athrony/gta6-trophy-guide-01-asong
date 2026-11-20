@@ -97,6 +97,7 @@ h1 em{font-style:normal;color:#fba4cf;text-shadow:0 0 35px #f779a944}
 .category{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#b9c9e2;background:#334561;padding:4px 7px;border-radius:3px}
 .description{color:#aebdd4;margin-top:5px;font-size:12px;line-height:1.5}
 .grade-label{justify-self:end;color:#a7b9d4;text-transform:uppercase;font-size:9px;letter-spacing:1.3px;font-weight:bold}
+.hidden-badge{display:block;margin-top:5px;padding:3px 5px;border:1px solid #8298bb66;border-radius:3px;color:#b8c9e1;font-size:8px;letter-spacing:.8px;text-align:center}
 .trophy details{margin-top:9px}
 .trophy summary{cursor:pointer;list-style:none;color:#9cc7ff;font-weight:bold;font-size:9px;letter-spacing:1px}
 .trophy summary:after{content:' +';font-size:14px}

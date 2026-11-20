@@ -33,15 +33,15 @@ function element(tag, className, text) {
 }
 
 
-function iconPath(trophy, hidden) {
-  return hidden ? 'assets/trophy-icons/hidden.jpg' : `assets/trophy-icons/${String(trophy.id).padStart(2, '0')}.jpg`;
+function iconPath(trophy) {
+  return `assets/trophy-icons/${String(trophy.id).padStart(2, '0')}.jpg`;
 }
 
-function trophyImage(trophy, hidden, className) {
+function trophyImage(trophy, className) {
   const img = document.createElement('img');
   if (className) img.className = className;
-  img.src = iconPath(trophy, hidden);
-  img.alt = hidden ? 'Hidden trophy' : trophy.name;
+  img.src = iconPath(trophy);
+  img.alt = trophy.name;
   img.width = 512;
   img.height = 512;
   img.decoding = 'async';
@@ -65,16 +65,12 @@ function render() {
   }
   const query = search.value.trim().toLowerCase();
   const visible = trophies.filter(trophy => {
-    const hidden = spoilerToggle.checked && trophy.hidden && !earned.has(trophy.id);
+    if (spoilerToggle.checked && trophy.hidden && !earned.has(trophy.id)) return false;
     const matchesFilter = filter === 'all' || (filter === 'missable' ? trophy.missable : trophy.kind === filter);
-    const searchable = hidden ? 'hidden trophy' : `${trophy.name} ${trophy.description} ${trophy.guide}`.toLowerCase();
+    const searchable = `${trophy.name} ${trophy.description} ${trophy.guide}`.toLowerCase();
     return matchesFilter && searchable.includes(query);
   });
-  if (sort.value === 'name') visible.sort((first, second) => {
-    const firstHidden = spoilerToggle.checked && first.hidden && !earned.has(first.id);
-    const secondHidden = spoilerToggle.checked && second.hidden && !earned.has(second.id);
-    return (firstHidden ? '' : first.name).localeCompare(secondHidden ? '' : second.name);
-  });
+  if (sort.value === 'name') visible.sort((first, second) => first.name.localeCompare(second.name));
   if (sort.value === 'grade') {
     const grades = ['platinum', 'gold', 'silver', 'bronze'];
     visible.sort((first, second) => grades.indexOf(first.grade) - grades.indexOf(second.grade));
@@ -90,63 +86,61 @@ function render() {
   if (!visible.some(trophy => trophy.id === selectedId)) selectedId = visible[0].id;
   for (const trophy of visible) {
     const isEarned = earned.has(trophy.id);
-    const hidden = spoilerToggle.checked && trophy.hidden && !isEarned;
     const row = element('article', `trophy kind-${trophy.kind} ${isEarned ? 'is-earned' : ''} ${selectedId === trophy.id ? 'is-selected' : ''}`);
     const check = element('label', 'check');
     const input = document.createElement('input');
     input.type = 'checkbox';
     input.checked = isEarned;
-    input.setAttribute('aria-label', hidden ? 'Mark hidden trophy earned' : `Mark ${trophy.name} earned`);
+    input.setAttribute('aria-label', `Mark ${trophy.name} earned`);
     input.addEventListener('change', () => { input.checked ? earned.add(trophy.id) : earned.delete(trophy.id); save(); render(); });
     check.append(input, element('span', 'checkmark', '✓'));
-    const icon = element('div', `trophy-icon ${trophy.grade}${hidden ? ' is-hidden' : ''}`);
-    icon.append(trophyImage(trophy, hidden), element('span', 'cup'));
+    const icon = element('div', `trophy-icon ${trophy.grade}`);
+    icon.append(trophyImage(trophy), element('span', 'cup'));
     const content = element('button', 'row-select');
     content.type = 'button';
     content.setAttribute('aria-pressed', String(selectedId === trophy.id));
-    content.append(element('h3', '', hidden ? 'Hidden trophy' : trophy.name), element('p', 'description', hidden ? 'Earn this trophy to reveal its details.' : trophy.description));
+    content.append(element('h3', '', trophy.name), element('p', 'description', trophy.description));
     content.addEventListener('click', () => { selectedId = trophy.id; render(); document.querySelector('.is-selected .row-select')?.focus(); });
-    row.append(check, icon, content, element('div', 'grade-label', trophy.grade));
+    const grade = element('div', 'grade-label', trophy.grade);
+    if (trophy.hidden) grade.append(element('span', 'hidden-badge', 'Hidden'));
+    row.append(check, icon, content, grade);
     list.append(row);
   }
   const selected = visible.find(trophy => trophy.id === selectedId);
-  const hidden = spoilerToggle.checked && selected.hidden && !earned.has(selected.id);
   const detail = document.querySelector('#trophy-detail');
   detail.replaceChildren();
-  const detailArt = element('div', `detail-art${hidden ? ' is-hidden' : ''} kind-${selected.kind}`);
+  const detailArt = element('div', `detail-art kind-${selected.kind}`);
   const detailCup = element('div', `detail-cup ${selected.grade}`);
   detailCup.append(element('span', 'cup'));
-  detailArt.append(trophyImage(selected, hidden, 'detail-icon'), detailCup);
-  const rarity = !hidden && typeof selected.rarityPercent === 'number'
+  detailArt.append(trophyImage(selected, 'detail-icon'), detailCup);
+  const rarity = typeof selected.rarityPercent === 'number'
     ? `EXOPHASE RARITY  ·  ${selected.rarityPercent}% (fetched 2026-11-20, early/volatile)`
     : '';
   detail.append(
     detailArt,
     element('div', 'detail-grade', `${selected.grade} trophy`),
-    element('h2', '', hidden ? 'Hidden trophy' : selected.name),
-    element('p', 'detail-description', hidden ? 'Earn this trophy to reveal its details.' : selected.description),
+    element('h2', '', selected.name),
+    element('p', 'detail-description', selected.description),
     element('p', 'detail-status', earned.has(selected.id) ? 'EARNED' : 'NOT YET EARNED'),
   );
   if (rarity) detail.append(element('p', 'detail-rarity', rarity));
-  if (!hidden) {
-    const details = document.createElement('details');
-    details.open = true;
-    const summary = element('summary', '', 'GUIDE & SOURCES');
-    const guide = element('div', 'guide');
-    guide.append(element('p', '', selected.guide));
-    const sources = element('p', 'source', 'SOURCES  ·  ');
-    selected.sources.forEach((source, index) => {
-      if (index) sources.append(document.createTextNode('  ·  '));
-      const link = element('a', '', source.name);
-      link.href = source.url;
-      link.target = '_blank';
-      link.rel = 'noopener noreferrer';
-      sources.append(link);
-    });
-    guide.append(sources, element('p', 'source', `MISSABILITY  ·  ${selected.missableStatus}`));
-    details.append(summary, guide);
-    detail.append(details);
-  }
+  const details = document.createElement('details');
+  details.open = true;
+  const summary = element('summary', '', 'GUIDE & SOURCES');
+  const guide = element('div', 'guide');
+  guide.append(element('p', '', selected.guide));
+  const sources = element('p', 'source', 'SOURCES  ·  ');
+  selected.sources.forEach((source, index) => {
+    if (index) sources.append(document.createTextNode('  ·  '));
+    const link = element('a', '', source.name);
+    link.href = source.url;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    sources.append(link);
+  });
+  guide.append(sources, element('p', 'source', `MISSABILITY  ·  ${selected.missableStatus}`));
+  details.append(summary, guide);
+  detail.append(details);
 
 }
 
