@@ -16,7 +16,7 @@ body:before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse
 main{padding:0 6%}
 h1,h2,h3,p{margin:0}
 .hero{position:relative;min-height:450px;display:flex;align-items:center;margin:28px 0 20px;overflow:hidden;border:1px solid #8894b52b;border-radius:12px;background:#111a30}
-.hero-art{position:absolute;inset:0;background:linear-gradient(90deg,rgba(8,14,30,.98) 0%,rgba(8,14,30,.88) 28%,rgba(8,14,30,.18) 75%),linear-gradient(0deg,rgba(8,14,30,.5),transparent 45%),url('assets/coast.jpg') center 53%/cover}
+.hero-art{position:absolute;inset:0;background:linear-gradient(90deg,rgba(8,14,30,.98) 0%,rgba(8,14,30,.88) 28%,rgba(8,14,30,.18) 75%),linear-gradient(0deg,rgba(8,14,30,.5),transparent 45%),url('assets/duo-hero.jpg') center 25%/cover}
 .hero-copy{position:relative;z-index:1;padding:55px 6%;max-width:620px}
 .eyebrow,.section-kicker{font-weight:800;font-size:10px;letter-spacing:2.3px;color:#9cb5df}
 .eyebrow span{display:inline-block;width:22px;height:2px;background:var(--pink);vertical-align:middle;margin-right:10px}
@@ -48,10 +48,10 @@ h1 em{font-style:normal;color:#fba4cf;text-shadow:0 0 35px #f779a944}
 .section-heading h2{font-size:31px;letter-spacing:-1px;margin-top:8px}
 .section-heading>p{color:var(--muted);line-height:1.6;max-width:330px;font-size:12px}
 .stages{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:25px}
-.stages article{position:relative;min-height:265px;padding:140px 20px 20px;overflow:hidden;border:1px solid var(--border);border-radius:8px;background:linear-gradient(0deg,#101a30 0%,#101a30 40%,transparent 100%),url('assets/city.jpg') center/cover}
-.stages article:nth-child(2){background-image:linear-gradient(0deg,#101a30 0%,#101a30 40%,transparent 100%),url('assets/explore.jpg')}
-.stages article:nth-child(3){background-image:linear-gradient(0deg,#101a30 0%,#101a30 40%,transparent 100%),url('assets/cruise.jpg')}
-.stages article:nth-child(4){background-image:linear-gradient(0deg,#101a30 0%,#101a30 40%,transparent 100%),url('assets/coast.jpg')}
+.stages article{position:relative;min-height:265px;padding:140px 20px 20px;overflow:hidden;border:1px solid var(--border);border-radius:8px;background:linear-gradient(0deg,#101a30 0%,#101a30 40%,transparent 100%),url('assets/lucia.jpg') center 30%/cover}
+.stages article:nth-child(2){background-image:linear-gradient(0deg,#101a30 0%,#101a30 40%,transparent 100%),url('assets/duo-hero.jpg');background-position:center 30%}
+.stages article:nth-child(3){background-image:linear-gradient(0deg,#101a30 0%,#101a30 40%,transparent 100%),url('assets/jason.jpg');background-position:center 30%}
+.stages article:nth-child(4){background-image:linear-gradient(0deg,#101a30 0%,#101a30 40%,transparent 100%),url('assets/mission-thumb.jpg');background-position:center 30%}
 .stages span{color:#e89ac8;font-size:10px;font-weight:bold;letter-spacing:1.4px}
 .stages h3{font-size:17px;margin:8px 0}
 .stages p,.notice{color:#adbad0;font-size:12px;line-height:1.6}
@@ -88,9 +88,9 @@ h1 em{font-style:normal;color:#fba4cf;text-shadow:0 0 35px #f779a944}
 .check input{position:absolute;opacity:0}
 .checkmark{display:block;border:1px solid #8295b6;border-radius:3px;width:19px;height:19px;color:transparent;text-align:center;font-size:12px;line-height:17px}
 .check input:checked+.checkmark{background:#78aaf2;border-color:#78aaf2;color:#101a2c}
-.trophy-icon{width:84px;height:64px;border-radius:5px;display:grid;place-items:center;background:linear-gradient(135deg,#16243e55,#0c132ad9),url('assets/cruise.jpg') center/cover}
-.kind-story .trophy-icon{background-image:linear-gradient(135deg,#16243e55,#0c132ad9),url('assets/city.jpg')}
-.kind-collectibles .trophy-icon{background-image:linear-gradient(135deg,#16243e55,#0c132ad9),url('assets/explore.jpg')}
+.trophy-icon{width:84px;height:64px;border-radius:5px;display:grid;place-items:center;background:linear-gradient(135deg,#16243e55,#0c132ad9),url('assets/mission-thumb.jpg') center/cover}
+.kind-story .trophy-icon{background-image:linear-gradient(135deg,#16243e55,#0c132ad9),url('assets/lucia.jpg')}
+.kind-collectibles .trophy-icon{background-image:linear-gradient(135deg,#16243e55,#0c132ad9),url('assets/mission-thumb.jpg')}
 .cup{width:35px;height:35px;filter:drop-shadow(0 2px 5px #000b)}
 .trophy-title{display:flex;align-items:center;gap:12px}
 .trophy-title h3{font-size:16px;font-weight:650}
@@ -151,6 +151,8 @@ footer{gap:20px;flex-wrap:wrap}
 .hero-art{background:linear-gradient(90deg,rgba(8,14,30,.97) 0%,rgba(8,14,30,.79) 27%,rgba(8,14,30,.08) 65%),linear-gradient(0deg,rgba(8,14,30,.35),transparent 55%),url('assets/duo-hero.jpg') center 10%/cover}
 .stages article:first-child{background-image:linear-gradient(0deg,#101a30 0%,#101a30 34%,transparent 100%),url('assets/lucia.jpg');background-position:center 30%}
 .stages article:nth-child(3){background-image:linear-gradient(0deg,#101a30 0%,#101a30 34%,transparent 100%),url('assets/jason.jpg');background-position:center 30%}
+.stages article:nth-child(2){background-image:linear-gradient(0deg,#101a30 0%,#101a30 34%,transparent 100%),url('assets/duo-hero.jpg');background-position:center 28%}
+.stages article:nth-child(4){background-image:linear-gradient(0deg,#101a30 0%,#101a30 34%,transparent 100%),url('assets/mission-thumb.jpg');background-position:center 30%}
 .kind-story .trophy-icon{background-image:linear-gradient(135deg,#16243e35,#0c132aba),url('assets/lucia.jpg');background-position:center 28%}
 .kind-activities .trophy-icon{background-image:linear-gradient(135deg,#16243e35,#0c132aba),url('assets/jason.jpg');background-position:center 28%}
 
@@ -180,3 +182,24 @@ main{display:flex;flex-direction:column}
 .detail-cup .cup{width:46px;height:46px}.detail-grade{text-transform:uppercase;letter-spacing:1.4px;font-size:10px;color:#a8bedc;margin:20px 0 8px}.detail-panel h2{font-size:25px;line-height:1.2}.detail-description{color:#c5d1e3;font-size:13px;line-height:1.55;margin:10px 0}.detail-status{font-size:10px;letter-spacing:1px;color:#97acd0;padding:10px 0;border-bottom:1px solid #ffffff20}.detail-panel details{margin-top:16px}.detail-panel summary{cursor:pointer;color:#b6d5ff;font-size:11px;font-weight:bold;letter-spacing:1px}.detail-panel .guide{font-size:12px}
 @media(max-width:800px){.collection-layout{grid-template-columns:1fr}.detail-panel{position:static;min-height:0;grid-row:1}.trophy-list{max-height:none}.hero{min-height:155px}.hero h1{font-size:27px}}
 .hero-art{background-position:center 25%}
+
+/* Per-trophy icons (Gamersky) on list rows and detail; do not use landscape/character thumbs here. */
+.trophy-icon,.kind-story .trophy-icon,.kind-activities .trophy-icon,.kind-collectibles .trophy-icon{
+  background:#121c33;
+  background-image:none;
+  padding:0;
+  overflow:hidden;
+}
+.trophy-icon img{width:100%;height:100%;object-fit:cover;display:block;border-radius:5px}
+.detail-art,.detail-art.kind-story{
+  background:#121c33;
+  background-image:none;
+  display:flex;
+  align-items:flex-end;
+  gap:12px;
+}
+.detail-art img.detail-icon{width:128px;height:128px;object-fit:cover;border-radius:8px;box-shadow:0 10px 28px #0007}
+.detail-rarity{font-size:10px;letter-spacing:.6px;color:#97acd0;margin:6px 0 0}
+
+.trophy-icon{position:relative}.trophy-icon .cup{position:absolute;right:2px;bottom:2px;width:22px;height:22px;filter:drop-shadow(0 1px 3px #000)}
+.detail-cup{align-self:flex-end}

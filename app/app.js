@@ -32,6 +32,23 @@ function element(tag, className, text) {
   return node;
 }
 
+
+function iconPath(trophy, hidden) {
+  return hidden ? 'assets/trophy-icons/hidden.jpg' : `assets/trophy-icons/${String(trophy.id).padStart(2, '0')}.jpg`;
+}
+
+function trophyImage(trophy, hidden, className) {
+  const img = document.createElement('img');
+  if (className) img.className = className;
+  img.src = iconPath(trophy, hidden);
+  img.alt = hidden ? 'Hidden trophy' : trophy.name;
+  img.width = 512;
+  img.height = 512;
+  img.decoding = 'async';
+  img.draggable = false;
+  return img;
+}
+
 function render() {
   const validIds = new Set(trophies.map(trophy => trophy.id));
   const earnedCount = [...earned].filter(id => validIds.has(id)).length;
@@ -82,8 +99,8 @@ function render() {
     input.setAttribute('aria-label', hidden ? 'Mark hidden trophy earned' : `Mark ${trophy.name} earned`);
     input.addEventListener('change', () => { input.checked ? earned.add(trophy.id) : earned.delete(trophy.id); save(); render(); });
     check.append(input, element('span', 'checkmark', '✓'));
-    const icon = element('div', `trophy-icon ${trophy.grade}`);
-    icon.append(element('span', 'cup'));
+    const icon = element('div', `trophy-icon ${trophy.grade}${hidden ? ' is-hidden' : ''}`);
+    icon.append(trophyImage(trophy, hidden), element('span', 'cup'));
     const content = element('button', 'row-select');
     content.type = 'button';
     content.setAttribute('aria-pressed', String(selectedId === trophy.id));
@@ -96,11 +113,21 @@ function render() {
   const hidden = spoilerToggle.checked && selected.hidden && !earned.has(selected.id);
   const detail = document.querySelector('#trophy-detail');
   detail.replaceChildren();
-  const detailArt = element('div', `detail-art kind-${selected.kind}`);
+  const detailArt = element('div', `detail-art${hidden ? ' is-hidden' : ''} kind-${selected.kind}`);
   const detailCup = element('div', `detail-cup ${selected.grade}`);
   detailCup.append(element('span', 'cup'));
-  detailArt.append(detailCup);
-  detail.append(detailArt, element('div', 'detail-grade', `${selected.grade} trophy`), element('h2', '', hidden ? 'Hidden trophy' : selected.name), element('p', 'detail-description', hidden ? 'Earn this trophy to reveal its details.' : selected.description), element('p', 'detail-status', earned.has(selected.id) ? 'EARNED' : 'NOT YET EARNED'));
+  detailArt.append(trophyImage(selected, hidden, 'detail-icon'), detailCup);
+  const rarity = !hidden && typeof selected.rarityPercent === 'number'
+    ? `EXOPHASE RARITY  ·  ${selected.rarityPercent}% (fetched 2026-11-20, early/volatile)`
+    : '';
+  detail.append(
+    detailArt,
+    element('div', 'detail-grade', `${selected.grade} trophy`),
+    element('h2', '', hidden ? 'Hidden trophy' : selected.name),
+    element('p', 'detail-description', hidden ? 'Earn this trophy to reveal its details.' : selected.description),
+    element('p', 'detail-status', earned.has(selected.id) ? 'EARNED' : 'NOT YET EARNED'),
+  );
+  if (rarity) detail.append(element('p', 'detail-rarity', rarity));
   if (!hidden) {
     const details = document.createElement('details');
     details.open = true;
