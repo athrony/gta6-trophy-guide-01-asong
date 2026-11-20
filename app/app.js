@@ -1,6 +1,7 @@
 const STORAGE_KEY = 'leonida-trophy-tracker-v1';
 const list = document.querySelector('#trophy-list');
 const search = document.querySelector('#search');
+const sort = document.querySelector('#sort');
 const spoilerToggle = document.querySelector('#spoilers');
 const message = document.querySelector('#message');
 let trophies = [];
@@ -51,6 +52,16 @@ function render() {
     const searchable = hidden ? 'hidden story trophy' : `${trophy.name} ${trophy.description} ${trophy.guide}`.toLowerCase();
     return matchesFilter && searchable.includes(query);
   });
+  if (sort.value === 'name') visible.sort((first, second) => {
+    const firstHidden = spoilerToggle.checked && first.kind === 'story' && !earned.has(first.id);
+    const secondHidden = spoilerToggle.checked && second.kind === 'story' && !earned.has(second.id);
+    return (firstHidden ? '' : first.name).localeCompare(secondHidden ? '' : second.name);
+  });
+  if (sort.value === 'grade') {
+    const grades = ['platinum', 'gold', 'silver', 'bronze'];
+    visible.sort((first, second) => grades.indexOf(first.grade) - grades.indexOf(second.grade));
+  }
+  if (sort.value === 'progress') visible.sort((first, second) => Number(earned.has(first.id)) - Number(earned.has(second.id)));
   document.querySelector('#result-count').textContent = `${visible.length} ${visible.length === 1 ? 'TROPHY' : 'TROPHIES'} SHOWN`;
   list.replaceChildren();
   if (!visible.length) {
@@ -105,6 +116,7 @@ document.querySelectorAll('[data-filter]').forEach(button => button.addEventList
   render();
 }));
 search.addEventListener('input', render);
+sort.addEventListener('change', render);
 spoilerToggle.addEventListener('change', () => { save(); render(); });
 document.querySelector('#export').addEventListener('click', () => {
   const blob = new Blob([JSON.stringify({ version: 1, earned: [...earned], hideSpoilers: spoilerToggle.checked }, null, 2)], { type: 'application/json' });
