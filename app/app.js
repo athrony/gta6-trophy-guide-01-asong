@@ -41,7 +41,7 @@ function render() {
     const matching = trophies.filter(trophy => trophy.grade === grade);
     const count = matching.filter(trophy => earned.has(trophy.id)).length;
     const item = element('div', 'grade-stat');
-    item.append(element('span', `medal ${grade}`, '✦'), element('strong', '', `${count}/${matching.length}`), element('small', '', grade));
+    item.append(element('span', `medal ${grade}`), element('strong', '', `${count}/${matching.length}`), element('small', '', grade));
     counts.append(item);
   }
   const query = search.value.trim().toLowerCase();
@@ -68,7 +68,9 @@ function render() {
     input.setAttribute('aria-label', hidden ? 'Mark hidden story trophy earned' : `Mark ${trophy.name} earned`);
     input.addEventListener('change', () => { input.checked ? earned.add(trophy.id) : earned.delete(trophy.id); save(); render(); });
     check.append(input, element('span', 'checkmark', '✓'));
-    const icon = element('div', `trophy-icon ${trophy.grade}`, '✦');
+    const icon = element('div', `trophy-icon ${trophy.grade}`);
+    icon.append(element('span', 'cup'));
+    row.classList.add(`kind-${trophy.kind}`);
     const content = element('div', 'trophy-content');
     const title = element('div', 'trophy-title');
     title.append(element('h3', '', hidden ? 'Hidden story trophy' : trophy.name), element('span', 'category', trophy.kind));
