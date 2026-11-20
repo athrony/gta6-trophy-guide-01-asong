@@ -147,3 +147,8 @@ footer{gap:20px;flex-wrap:wrap}
 .guide-facts a,.source a{color:#aed4ff;text-decoration:underline;text-underline-offset:3px}
 @media(max-width:800px){.guide-facts{grid-template-columns:repeat(4,1fr)}.guide-facts p{grid-column:1/-1}}
 @media(max-width:480px){.guide-facts{grid-template-columns:repeat(2,1fr)}.hero{min-height:300px}}
+.hero-art{background:linear-gradient(90deg,rgba(8,14,30,.97) 0%,rgba(8,14,30,.79) 27%,rgba(8,14,30,.08) 65%),linear-gradient(0deg,rgba(8,14,30,.35),transparent 55%),url('assets/duo-hero.jpg') center 10%/cover}
+.stages article:first-child{background-image:linear-gradient(0deg,#101a30 0%,#101a30 34%,transparent 100%),url('assets/lucia.jpg');background-position:center 30%}
+.stages article:nth-child(3){background-image:linear-gradient(0deg,#101a30 0%,#101a30 34%,transparent 100%),url('assets/jason.jpg');background-position:center 30%}
+.kind-story .trophy-icon{background-image:linear-gradient(135deg,#16243e35,#0c132aba),url('assets/lucia.jpg');background-position:center 28%}
+.kind-activities .trophy-icon{background-image:linear-gradient(135deg,#16243e35,#0c132aba),url('assets/jason.jpg');background-position:center 28%}
