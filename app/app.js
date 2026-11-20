@@ -12,7 +12,6 @@ let selectedId = 1;
 try {
   const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
   earned = new Set(Array.isArray(saved.earned) ? saved.earned : []);
-  if (typeof saved.hideSpoilers === 'boolean') spoilerToggle.checked = saved.hideSpoilers;
 } catch {
   message.textContent = 'Saved progress could not be read. You can import a backup.';
 }
